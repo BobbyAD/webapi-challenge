@@ -34,6 +34,34 @@ router.get("/:id", (req, res) => {
         });
 });
 
+router.get("/:id/actions", (req, res) => {
+    Projects.get(req.params.id)
+        .then(project => {
+            if (project) {
+                Projects.getProjectActions(req.params.id)
+                    .then(actions => {
+                        res.status(200).json(actions)
+                    })
+                    .catch(error => {
+                        console.log(error)
+                        res.status(500).send({
+                            message: "Error finding the actions"
+                        })
+                    })
+            } else {
+                res.status(404).send({
+                    message: "Error finding the project"
+                })
+            }
+        })
+        .catch(error => {
+            console.log(error)
+            res.status(500).send({
+                message: "error retrieving the project"
+            })
+        })
+})
+
 router.post("/", (req, res) => {
     if (req.body && req.body.description) {
         Projects.insert(req.body)
